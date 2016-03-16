@@ -127,7 +127,7 @@ public class MainActivity extends Activity {
         //create calendar object for current day
         long currentTime = System.currentTimeMillis();
         Calendar now = Calendar.getInstance();
-        now.set(year_y,month_y,day_y);
+        now.set(year_y, month_y, day_y);
         //now.setTimeInMillis(currentTime);
 
         //Get difference between years
