@@ -76,4 +76,14 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:textAlignment="center" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/backgroundImage"
+        android:layout_below="@+id/calculatedDate"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="25dp"
+        android:contentDescription="@string/logo" />
 </RelativeLayout>

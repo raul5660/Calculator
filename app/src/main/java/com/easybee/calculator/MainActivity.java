@@ -2,10 +2,14 @@ package com.easybee.calculator;
 
 import java.text.ParseException;
 import java.util.Calendar;
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -13,7 +17,7 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
     //Variables to be used in the class
     private Calendar calendar;
@@ -41,11 +45,13 @@ public class MainActivity extends Activity {
         calendar = Calendar.getInstance();
 
         year_y = year_x = calendar.get(Calendar.YEAR);
-        month_y = month_x = calendar.get(Calendar.MONTH);
+        month_y = month_x = calendar.get(Calendar.MONTH) + 1;
         day_y = day_x = calendar.get(Calendar.DAY_OF_MONTH);
 
         startDate.setText(String.format("%d/%d/%d",month_x,day_x,year_x));
         endDate.setText(String.format("%d/%d/%d", month_x, day_x, year_x));
+
+
 
         showDialog(START_ID);
 
@@ -132,7 +138,7 @@ public class MainActivity extends Activity {
 
         //Get difference between years
         years = now.get(Calendar.YEAR) - birthDay.get(Calendar.YEAR);
-        int currMonth = now.get(Calendar.MONTH) + 1;
+        int currMonth = now.get(Calendar.MONTH);
         int birthMonth = birthDay.get(Calendar.MONTH) + 1;
 
         //Get difference between months
@@ -171,5 +177,32 @@ public class MainActivity extends Activity {
 
         //Create new Age object
         return new Age(days, months, years);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void openWebsite(MenuItem item){
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.myeasybee.com"));
+        startActivity(browserIntent);
     }
 }
