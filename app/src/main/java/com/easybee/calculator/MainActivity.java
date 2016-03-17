@@ -2,124 +2,80 @@ package com.easybee.calculator;
 
 import java.text.ParseException;
 import java.util.Calendar;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
     //Variables to be used in the class
-    private Calendar calendar;
-    private TextView calculated, startDate, endDate;
-    private int year_x, month_x, day_x, year_y, month_y, day_y;
-    private Button start, end, calculate;
-    static final int START_ID = 0, END_ID = 1;
-    static int GLOBAL_ID = 0;
+    private TextView calculatedDate;
+    private Button calculateButton;
+    private DatePicker startDate, endDate;
+    private ImageView mImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mImageView = (ImageView) findViewById(R.id.imageView);
+
         //Initializing TextViews
-        calculated = (TextView) findViewById(R.id.calculatedDate);
-        startDate = (TextView) findViewById(R.id.startDate);
-        endDate = (TextView) findViewById(R.id.endDate);
+        calculatedDate = (TextView) findViewById(R.id.calculatedDate);
 
         //Initializing Buttons
-        start = (Button) findViewById(R.id.start);
-        end = (Button) findViewById(R.id.end);
-        calculate = (Button) findViewById(R.id.calculate);
+        calculateButton = (Button) findViewById(R.id.calculate);
 
-        calendar = Calendar.getInstance();
+        //Initializing DatePickers
+        startDate = (DatePicker) findViewById(R.id.startDate);
+        endDate = (DatePicker) findViewById(R.id.endDate);
 
-        year_y = year_x = calendar.get(Calendar.YEAR);
-        month_y = month_x = calendar.get(Calendar.MONTH) + 1;
-        day_y = day_x = calendar.get(Calendar.DAY_OF_MONTH);
-
-        startDate.setText(String.format("%d/%d/%d",month_x,day_x,year_x));
-        endDate.setText(String.format("%d/%d/%d", month_x, day_x, year_x));
-
-
-
-        showDialog(START_ID);
-
-        start.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        GLOBAL_ID = START_ID;
-                        showDialog(START_ID);
-                    }
-                }
-        );
-
-        end.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        GLOBAL_ID = END_ID;
-                        showDialog(END_ID);
-                    }
-                }
-        );
-
-        calculate.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        try {
-                            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-                            Date birthDate = sdf.parse(String.format("%d/%d/%d",month_x,day_x,year_x)); //Yeh !! It's my date of birth :-)
-                            Age age = calculateAge(birthDate);
-                            calculated.setText(age.toString());
-                        } catch (ParseException e) {
-                            calculated.setText("Error!! Try again.");
-                        }
-                    }
-                }
-        );
-    }
-
-    private DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            if (GLOBAL_ID == START_ID) {
-                year_x = year;
-                month_x = monthOfYear;
-                day_x = dayOfMonth;
-                startDate.setText(String.format("%d/%d/%d",month_x,day_x,year_x));
-            } else if (GLOBAL_ID == END_ID) {
-                year_y = year;
-                month_y = monthOfYear;
-                day_y = dayOfMonth;
-                endDate.setText(String.format("%d/%d/%d", month_y, day_y, year_y));
+        calculateButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                calculate();
             }
-        }
-    };
+        });
 
-    @Override
-    protected Dialog onCreateDialog(int ID) {
-        if (ID == 0){
-            return new DatePickerDialog(this, datePickerListener, year_x, month_x, day_x);
-        } else if (ID == 1){
-            return new DatePickerDialog(this, datePickerListener, year_y, month_y, day_y);
-        } else {
-            return null;
-        }
+        /*BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(getResources(), R.drawable.bg, options);
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+
+
+        mImageView.setImageBitmap(
+                decodeSampledBitmapFromResource(getResources(), R.drawable.bg, size.x, 100));*/
     }
 
+    private void calculate() {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
+            Date birthDate = sdf.parse(String.format("%d/%d/%d",startDate.getMonth(),startDate.getDayOfMonth(),startDate.getYear())); //Yeh !! It's my date of birth :-)
+            Age age = calculateAge(birthDate);
+            calculatedDate.setText(age.toString());
+        } catch (ParseException e) {
+            calculatedDate.setText("Error!! Try again.");
+        }
+    }
     private Age calculateAge(Date birthDate)
     {
         int years = 0;
@@ -133,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         //create calendar object for current day
         long currentTime = System.currentTimeMillis();
         Calendar now = Calendar.getInstance();
-        now.set(year_y, month_y, day_y);
+        now.set(endDate.getYear(), endDate.getMonth(), endDate.getDayOfMonth());
         //now.setTimeInMillis(currentTime);
 
         //Get difference between years
@@ -186,23 +142,56 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     public void openWebsite(MenuItem item){
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.myeasybee.com"));
         startActivity(browserIntent);
+    }
+
+    public void refresh(MenuItem item){
+        Calendar cal1 = Calendar.getInstance();
+
+        startDate.updateDate(cal1.get(Calendar.YEAR),cal1.get(Calendar.MONTH),cal1.get(Calendar.DAY_OF_MONTH));
+        endDate.updateDate(cal1.get(Calendar.YEAR),cal1.get(Calendar.MONTH),cal1.get(Calendar.DAY_OF_MONTH));
+
+        calculatedDate.setText("0 Years, 0 Months, 0 Days");
+    }
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
+    public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
+                                                         int reqWidth, int reqHeight) {
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(res, resId, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeResource(res, resId, options);
     }
 }

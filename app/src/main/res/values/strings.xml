@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">EasyBee Age Calculator</string>
-    <string name="start">Select Start Date</string>
-    <string name="end">Select End Date</string>
-    <string name="calculate">Calculate</string>
+    <string name="startDate">Start Date</string>
+    <string name="endDate">End Date</string>
+    <string name="calculate">Calculate Age</string>
     <string name="calculatedDate">0 Years, 0 Months, 0 Days</string>
-    <string name="action_settings">Info</string>
+    <string name="info">Info</string>
+    <string name="refresh">Refresh</string>
     <string name="logo">Logo</string>
 </resources>
